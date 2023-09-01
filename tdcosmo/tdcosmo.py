@@ -16,8 +16,6 @@ class TDCOSMO(Likelihood):
         self.datasets = datasets 
         self.num_distribution_draws = num_distribution_draws
 
-        print(datasets)
-
         # 7 TDCOSMO lenses
         tdcosmo_file = open(os.path.join(dir_path, 'tdcosmo7_likelihood_processed.pkl'), 'rb')
         tdcosmo7_likelihood_processed = pickle.load(tdcosmo_file)
@@ -64,7 +62,7 @@ class TDCOSMO(Likelihood):
 
         return requirements_dictionary
 
-    def logp(self, **param_values):
+    def logp(self, **params_values):
         """
         Take a dictionary of (sampled) nuisance parameter values param_values
         and return a log-likelihood.
@@ -80,14 +78,12 @@ class TDCOSMO(Likelihood):
         # get the likelihood from hierarc
         self._likelihood = LensSampleLikelihood(self.lens_list)
 
-        print(param_values)
-
         # nuisance parameters required to evaluate the likelihood in accordance with TDCOSMO IV Table 3
-        lambda_mst = param_values['lambda_mst']              # mean in the internal MST distribution
-        lambda_mst_sigma = param_values['lambda_mst_sigma']  # Gaussian sigma of the distribution of lambda_mst
-        alpha_lambda = param_values['alpha_lambda']          # slope of lambda_mst with r_eff/theta_E
-        a_ani = param_values['a_ani']                        # mean a_ani anisotropy parameter in the OM model
-        a_ani_sigma = param_values['a_ani_sigma']            # sigma(a_ani)⟨a_ani⟩ is the 1-sigma Gaussian scatter in a_ani
+        lambda_mst = params_values['lambda_mst']              # mean in the internal MST distribution
+        lambda_mst_sigma = params_values['lambda_mst_sigma']  # Gaussian sigma of the distribution of lambda_mst
+        alpha_lambda = params_values['alpha_lambda']          # slope of lambda_mst with r_eff/theta_E
+        a_ani = params_values['a_ani']                        # mean a_ani anisotropy parameter in the OM model
+        a_ani_sigma = params_values['a_ani_sigma']            # sigma(a_ani)⟨a_ani⟩ is the 1-sigma Gaussian scatter in a_ani
 
         kwargs_lens_test = {'lambda_mst': lambda_mst, 'lambda_mst_sigma': lambda_mst_sigma, 'alpha_lambda': alpha_lambda}
 
@@ -96,8 +92,6 @@ class TDCOSMO(Likelihood):
         # kwargs_lens_test = {'lambda_mst': 1.0, 'lambda_mst_sigma': 0.1, 'alpha_lambda': 0.0}
 
         # kwargs_kin_test = {'a_ani': 1.0,'a_ani_sigma': 0.1}
-
-        print(kwargs_lens_test)
 
         # get the log-likelihood from hierarc
         loglike = self._likelihood.log_likelihood(cosmo=cosmo, kwargs_lens=kwargs_lens_test, kwargs_kin=kwargs_kin_test)
