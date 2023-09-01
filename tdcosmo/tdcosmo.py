@@ -89,10 +89,6 @@ class TDCOSMO(Likelihood):
 
         kwargs_kin_test = {'a_ani': a_ani,'a_ani_sigma': a_ani_sigma}
 
-        # kwargs_lens_test = {'lambda_mst': 1.0, 'lambda_mst_sigma': 0.1, 'alpha_lambda': 0.0}
-
-        # kwargs_kin_test = {'a_ani': 1.0,'a_ani_sigma': 0.1}
-
         # get the log-likelihood from hierarc
         loglike = self._likelihood.log_likelihood(cosmo=cosmo, kwargs_lens=kwargs_lens_test, kwargs_kin=kwargs_kin_test)
 
