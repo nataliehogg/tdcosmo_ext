@@ -9,5 +9,5 @@ This package provides the TDCOSMO likelihood as an external package for [Cobaya]
 
 ## References
 
-(Birrer et al.)[https://arxiv.org/abs/2007.02941], TDCOSMO IV - Hierarchical time-delay cosmography - joint
+[Birrer et al.](https://arxiv.org/abs/2007.02941), TDCOSMO IV: Hierarchical time-delay cosmography -- joint
 inference of the Hubble constant and galaxy density profiles, A&A 2020.
