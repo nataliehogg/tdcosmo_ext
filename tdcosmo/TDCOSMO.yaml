@@ -1,38 +1,46 @@
-path: null
-datasets: TDCOSMO7, SLACS_SDSS, SLACS_IFU
-tdcosmo_file: data/tdcosmo7_likelihood_processed.pkl
-slacs_sdss_file: data/slacs_sdss_likelihood_processed.pkl
-slacs_ifu_file: data/slacs_ifu_likelihood_processed.pkl
+# default
+tdcosmo_lenses:
+slacs_sdss_lenses:
+slacs_ifu_lenses:
+num_distribution_draws: 200
 
 # default nuisance parameter priors as used in TDCOSMO IV
 params:
   lambda_mst:
-    prior:
-      dist: uniform
-      min: 0.5
-      max: 1.5
-    latex: \lambda_{\rm MST}
+      prior:
+        dist: uniform
+        min: 0.5
+        max: 1.5
+      ref:
+        dist: norm
+        loc: 1.0
+        scale: 0.01
+      latex: \lambda_{\rm MST}
   lambda_mst_sigma:
-    prior:
-      dist: uniform
-      min: 0.001
-      max: 0.5
-    latex: \sigma_{\lambda_{\rm MST}}
+      prior:
+        dist: loguniform
+        a: 0.001
+        b: 0.5
+      latex: \sigma_{\lambda_{\rm MST}}
   alpha_lambda:
-    prior:
-      dist: uniform
-      min: -1.0
-      max: 1.0
-    latex: \alpha_{\lambda}
+      prior:
+        dist: uniform
+        min: -1.0
+        max: 1.0
+      ref:
+        dist: norm
+        loc: 0.0
+        scale: 0.01
+      latex: \alpha_{\lambda}
   a_ani:
-    prior:
-      dist: uniform
-      min: 0.1
-      max: 5.0
-    latex: a_{\rm ani}
+      prior:
+        dist: loguniform
+        a: 0.1
+        b: 5.0
+      latex: a_{\rm ani}
   a_ani_sigma:
-    prior:
-      dist: uniform
-      min: 0.01
-      max: 1.0
-    latex: \sigma_{a_{\rm ani}}
+      prior:
+        dist: loguniform
+        a: 0.01
+        b: 1.0
+      latex: \sigma_{a_{\rm ani}}

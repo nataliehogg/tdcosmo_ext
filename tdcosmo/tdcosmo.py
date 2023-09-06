@@ -6,44 +6,53 @@ from hierarc.Likelihood.lens_sample_likelihood import LensSampleLikelihood
 
 class TDCOSMO(Likelihood):
 
-    def initialize(self, datasets='TDCOSMO7', num_distribution_draws=200):
+    def initialize(self):
         """
-         In this function we load the TDCOSMO and SLACS data and get the likelihood from hierArc.
+         In this function we load the TDCOSMO and SLACS data.
 
         """
+
         dir_path =  os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/')
 
-        self.datasets = datasets 
-        self.num_distribution_draws = num_distribution_draws
+        self.lens_list = []
 
         # 7 TDCOSMO lenses
-        tdcosmo_file = open(os.path.join(dir_path, 'tdcosmo7_likelihood_processed.pkl'), 'rb')
-        tdcosmo7_likelihood_processed = pickle.load(tdcosmo_file)
+        if self.tdcosmo_lenses is not None:
+            print('Using TDCOSMO lenses')
+            tdcosmo_data = open(os.path.join(dir_path, 'tdcosmo7_likelihood_processed.pkl'), 'rb')
+            tdcosmo7_likelihood_processed = pickle.load(tdcosmo_data)
+            for lens in tdcosmo7_likelihood_processed:
+                lens['num_distribution_draws'] = self.num_distribution_draws
+            self.lens_list += tdcosmo7_likelihood_processed
+        else:
+            print('TDCOSMO lenses not being used')
 
         # 33 SLACS lenses with SDSS spectroscopy
-        slacs_sdss_file =  open(os.path.join(dir_path, 'slacs_sdss_likelihood_processed.pkl'), 'rb')
-        slacs_sdss_likelihood_processed = pickle.load(slacs_sdss_file)
-
-        # 5 SLACS lenses with IFU
-        slacs_ifu_file = open(os.path.join(dir_path, 'slacs_ifu_likelihood_processed.pkl'), 'rb')
-        slacs_ifu_likelihood_processed = pickle.load(slacs_ifu_file)
-
-        # here we update each individual lens likelihood configuration 
-        # with the setting of the Monte-Carlo marginalisation over hyper-parameter distributions
-        for lens in tdcosmo7_likelihood_processed:
-            lens['num_distribution_draws'] = self.num_distribution_draws
-        for lens in slacs_sdss_likelihood_processed:
-            lens['num_distribution_draws'] = self.num_distribution_draws
-        for lens in slacs_ifu_likelihood_processed:
-            lens['num_distribution_draws'] = self.num_distribution_draws
-
-        self.lens_list = []
-        if 'TDCOSMO7' in self.datasets:
-            self.lens_list += tdcosmo7_likelihood_processed
-        if 'SLACS_SDSS' in self.datasets:
+        if self.slacs_sdss_lenses is not None:
+            print('Using SLACS SDSS lenses')
+            slacs_sdss_data =  open(os.path.join(dir_path, 'slacs_sdss_likelihood_processed.pkl'), 'rb')
+            slacs_sdss_likelihood_processed = pickle.load(slacs_sdss_data)
+            for lens in slacs_sdss_likelihood_processed:
+                lens['num_distribution_draws'] = self.num_distribution_draws
             self.lens_list += slacs_sdss_likelihood_processed
-        if 'SLACS_IFU' in self.datasets:
+        else:
+            print('SLACS SDSS lenses not being used')
+        
+        # 5 SLACS lenses with IFU
+        if self.slacs_ifu_lenses is not None:
+            print('Using SDSS IFU lenses')
+            slacs_ifu_data = open(os.path.join(dir_path, 'slacs_ifu_likelihood_processed.pkl'), 'rb')
+            slacs_ifu_likelihood_processed = pickle.load(slacs_ifu_data)
+            for lens in slacs_ifu_likelihood_processed:
+                lens['num_distribution_draws'] = self.num_distribution_draws
             self.lens_list += slacs_ifu_likelihood_processed
+        else:
+            print('SLACS IFU lenses not being used')
+        
+        if len(self.lens_list) == 0:
+            raise ValueError('You haven\'t loaded any data!')
+        else:
+            pass
         
     def get_requirements(self):
         """
@@ -64,7 +73,7 @@ class TDCOSMO(Likelihood):
 
     def logp(self, **params_values):
         """
-        Take a dictionary of (sampled) nuisance parameter values param_values
+        Take a dictionary of (sampled) nuisance parameter values params_values
         and return a log-likelihood.
 
         """
