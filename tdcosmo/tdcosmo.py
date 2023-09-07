@@ -2,7 +2,8 @@ import os
 import pickle
 from cobaya.likelihood import Likelihood
 from hierarc.Likelihood.lens_sample_likelihood import LensSampleLikelihood
-
+from lenstronomy.Cosmo.cosmo_interp import CosmoInterp
+import numpy as np
 
 class TDCOSMO(Likelihood):
 
@@ -58,16 +59,22 @@ class TDCOSMO(Likelihood):
         """
         This function specifies the quantities we need to be calculated by the theory code.
 
-        In our case, since we need to define an external Cosmo class, we have to use the full CAMBdata object.
-        This is non-ideal, as it ties the likelihood to CAMB as the theory code. A more general implementation would use
-        self.provider.get_angular_diameter_distance(), but the hierarc likelihood requires the cosmo object.
+        We need a set of angular diameter distances which will be interpolated by CosmoInterp(),
+        Omega_k and H0.
 
         :return: requirements_dictionary
         :rtype: dict
 
         """
 
-        requirements_dictionary = {'CAMBdata': None}
+        # NH: what's the highest redshift that we would need?
+        # and does having a finer spacing help?
+
+        self.zlist = np.linspace(0,5,100) 
+
+        requirements_dictionary = {'angular_diameter_distance': {'z': self.zlist}, 
+                                   'omk': None,
+                                   'H0': None}
 
         return requirements_dictionary
 
@@ -78,11 +85,17 @@ class TDCOSMO(Likelihood):
 
         """
 
-        # get the camb results
-        camb_results = self.provider.get_CAMBdata()
+        DA = self.provider.get_angular_diameter_distance(self.zlist)
 
-        # get an instance of the Cosmo class (defined below) using the camb results
-        cosmo = Cosmo(camb_results)
+        omega_k = self.provider.get_param('omk')
+
+        H0 = self.provider.get_param('H0') # km/s/Mpc
+
+        c = 299792 # km/s
+
+        K = omega_k*(c**2/H0**2) # dimensionless
+
+        cosmo = CosmoInterp(ang_dist_list = DA, z_list = self.zlist, Ok0=omega_k, K=K)
 
         # get the likelihood from hierarc
         self._likelihood = LensSampleLikelihood(self.lens_list)
@@ -102,48 +115,3 @@ class TDCOSMO(Likelihood):
         loglike = self._likelihood.log_likelihood(cosmo=cosmo, kwargs_lens=kwargs_lens_test, kwargs_kin=kwargs_kin_test)
 
         return loglike
-
-
-class Cosmo:
-    """
-    Basic cosmology class which uses CAMB instead of astropy to get angular diameter distances.
-
-    Note: hierarc expects angular diameter distance functions with the attribute .value, 
-    whereas CAMB provides the float value directly without units. Hierarc has been modified to account for this.
-
-    """
-
-    def __init__(self, camb_results):
-
-        self.camb_results = camb_results
-
-    def angular_diameter_distance(self, z):
-        """
-        This function returns the angular diameter distance to a redshift.
-
-        :param camb_results: CAMB results object
-        :param z: the redshift
-        :returns: the angular diameter distance in Mpc
-        :rtype: float 
-
-        """
-
-        DA = self.camb_results.angular_diameter_distance(z)
-
-        return DA
-    
-    def angular_diameter_distance_z1z2(self, z1, z2):
-        """
-        This function returns the angular diameter distance between two redshifts.
-
-        :param camb_results: CAMB results object
-        :param z1: first redshift
-        :param z2: second redshift
-        :returns: the angular diameter distance in Mpc
-        :rtype: float 
-
-        """
-
-        DA = self.camb_results.angular_diameter_distance2(z1, z2)
-
-        return DA
