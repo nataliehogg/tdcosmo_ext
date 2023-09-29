@@ -1,9 +1,10 @@
 import os
 import pickle
+import numpy as np
 from cobaya.likelihood import Likelihood
 from hierarc.Likelihood.lens_sample_likelihood import LensSampleLikelihood
 from lenstronomy.Cosmo.cosmo_interp import CosmoInterp
-import numpy as np
+
 
 class TDCOSMO(Likelihood):
 
@@ -67,10 +68,7 @@ class TDCOSMO(Likelihood):
 
         """
 
-        # NH: what's the highest redshift that we would need?
-        # and does having a finer spacing help?
-
-        self.zlist = np.linspace(0,5,100) 
+        self.zlist = np.linspace(0, 5, 100) # list of redshifts for which angular diameter distances will be computed
 
         requirements_dictionary = {'angular_diameter_distance': {'z': self.zlist}, 
                                    'omk': None,
@@ -80,24 +78,26 @@ class TDCOSMO(Likelihood):
 
     def logp(self, **params_values):
         """
-        Take a dictionary of (sampled) nuisance parameter values params_values
-        and return a log-likelihood.
+        This function takes a dictionary of (sampled) nuisance parameter values and returns the log-likelihood.
+
+        :param params_values: dictionary of nuisance parameters
+        :return: loglike
 
         """
 
-        DA = self.provider.get_angular_diameter_distance(self.zlist)
+        DA = self.provider.get_angular_diameter_distance(self.zlist) # angular diameter distances of the redshifts in zlist
 
-        omega_k = self.provider.get_param('omk')
+        omega_k = self.provider.get_param('omk') # spatial curvature density
 
-        H0 = self.provider.get_param('H0') # km/s/Mpc
+        H0 = self.provider.get_param('H0') # Hubble parameter in km/s/Mpc
 
-        c = 299792 # km/s
+        c = 299792 # speed of light in km/s
 
-        K = omega_k*(c**2/H0**2) # dimensionless
+        K = omega_k*(c**2/H0**2) # dimensionless spatial curvature
 
-        cosmo = CosmoInterp(ang_dist_list = DA, z_list = self.zlist, Ok0=omega_k, K=K)
+        cosmo = CosmoInterp(ang_dist_list = DA, z_list = self.zlist, Ok0=omega_k, K=K) # get the cosmo object for hierarc
 
-        # get the likelihood from hierarc
+        # initialise the likelihood from hierarc for the lenses in lens_list
         self._likelihood = LensSampleLikelihood(self.lens_list)
 
         # nuisance parameters required to evaluate the likelihood in accordance with TDCOSMO IV Table 3
