@@ -16,12 +16,18 @@ params:
         dist: norm
         loc: 1.0
         scale: 0.01
+      proposal: 0.001
       latex: \lambda_{\rm MST}
   lambda_mst_sigma:
       prior:
         dist: loguniform
         a: 0.001
         b: 0.5
+      ref:
+        dist: norm
+        loc: 0.01
+        scale: 0.01
+      proposal: 0.001
       latex: \sigma_{\lambda_{\rm MST}}
   alpha_lambda:
       prior:
@@ -31,17 +37,27 @@ params:
       ref:
         dist: norm
         loc: 0.0
-        scale: 0.01
+        scale: 0.05
       latex: \alpha_{\lambda}
   a_ani:
       prior:
         dist: loguniform
         a: 0.1
         b: 5.0
+      ref:
+        dist: norm
+        loc: 2.3
+        scale: 1.5
+      proposal: 0.001
       latex: a_{\rm ani}
   a_ani_sigma:
       prior:
         dist: loguniform
         a: 0.01
         b: 1.0
+      ref:
+        dist: norm
+        loc: 0.16
+        scale: 0.5
+      proposal: 0.001
       latex: \sigma_{a_{\rm ani}}
