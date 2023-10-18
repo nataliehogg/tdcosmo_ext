@@ -16,7 +16,7 @@ class TDCOSMO(Likelihood):
 
         dir_path =  os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/')
 
-        self.lens_list = []
+        lens_list = []
 
         # 7 TDCOSMO lenses
         if self.tdcosmo_lenses is not None:
@@ -25,7 +25,7 @@ class TDCOSMO(Likelihood):
             tdcosmo7_likelihood_processed = pickle.load(tdcosmo_data)
             for lens in tdcosmo7_likelihood_processed:
                 lens['num_distribution_draws'] = self.num_distribution_draws
-            self.lens_list += tdcosmo7_likelihood_processed
+            lens_list += tdcosmo7_likelihood_processed
         else:
             print('TDCOSMO lenses not being used')
 
@@ -36,7 +36,7 @@ class TDCOSMO(Likelihood):
             slacs_sdss_likelihood_processed = pickle.load(slacs_sdss_data)
             for lens in slacs_sdss_likelihood_processed:
                 lens['num_distribution_draws'] = self.num_distribution_draws
-            self.lens_list += slacs_sdss_likelihood_processed
+            lens_list += slacs_sdss_likelihood_processed
         else:
             print('SLACS SDSS lenses not being used')
         
@@ -47,14 +47,17 @@ class TDCOSMO(Likelihood):
             slacs_ifu_likelihood_processed = pickle.load(slacs_ifu_data)
             for lens in slacs_ifu_likelihood_processed:
                 lens['num_distribution_draws'] = self.num_distribution_draws
-            self.lens_list += slacs_ifu_likelihood_processed
+            lens_list += slacs_ifu_likelihood_processed
         else:
             print('SLACS IFU lenses not being used')
         
-        if len(self.lens_list) == 0:
+        if len(lens_list) == 0:
             raise ValueError('You haven\'t loaded any data!')
         else:
             pass
+
+        # initialise the likelihood from hierarc for the lenses in lens_list
+        self._likelihood = LensSampleLikelihood(lens_list)
         
     def get_requirements(self):
         """
@@ -96,9 +99,6 @@ class TDCOSMO(Likelihood):
         K = omega_k*(c**2/H0**2) # dimensionless spatial curvature
 
         cosmo = CosmoInterp(ang_dist_list = DA, z_list = self.zlist, Ok0=omega_k, K=K) # get the cosmo object for hierarc
-
-        # initialise the likelihood from hierarc for the lenses in lens_list
-        self._likelihood = LensSampleLikelihood(self.lens_list)
 
         # nuisance parameters required to evaluate the likelihood in accordance with TDCOSMO IV Table 3
         lambda_mst = params_values['lambda_mst']              # mean in the internal MST distribution
