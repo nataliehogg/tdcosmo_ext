@@ -11,4 +11,4 @@ This package provides the TDCOSMO likelihood as an external package for [Cobaya]
 [Birrer et al. (2020)](https://arxiv.org/abs/2007.02941). TDCOSMO IV: Hierarchical time-delay cosmography –
 joint inference of the Hubble constant and galaxy density profiles, Astronomy & Astrophysics, 643, A165.
 
-[Hogg 2023](https://arxiv.org/abs/2310.11977). A measurement of the dark energy equation of state with 40 strong lenses.
+[Hogg 2023](https://arxiv.org/abs/2310.11977). Constraints on dark energy from TDCOSMO & SLACS lenses, Monthly Notices of the Royal Astronomical Society: Letters, 529, 1.
