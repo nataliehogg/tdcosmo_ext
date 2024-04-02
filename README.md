@@ -27,7 +27,7 @@ joint inference of the Hubble constant and galaxy density profiles, Astronomy & 
 }
 ```
 
-[Hogg (2024)](https://arxiv.org/abs/2310.11977). Constraints on dark energy from TDCOSMO & SLACS lenses, Monthly Notices of the Royal Astronomical Society: Letters, 529, 1, March 2024.
+[Hogg (2024)](https://arxiv.org/abs/2310.11977). Constraints on dark energy from TDCOSMO & SLACS lenses, Monthly Notices of the Royal Astronomical Society: Letters, 528, 1, March 2024.
 
 ```
 @article{Hogg:2023khs,
