@@ -14,7 +14,8 @@ joint inference of the Hubble constant and galaxy density profiles, Astronomy & 
 ```
 @article{Birrer:2020tax,
     author = "Birrer, S. and others",
-    title = "{TDCOSMO - IV. Hierarchical time-delay cosmography \textendash{} joint inference of the Hubble constant and galaxy density profiles}",
+    title = "{TDCOSMO - IV. Hierarchical time-delay cosmography \textendash{} joint inference 
+              of the Hubble constant and galaxy density profiles}",
     eprint = "2007.02941",
     archivePrefix = "arXiv",
     primaryClass = "astro-ph.CO",
