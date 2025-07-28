@@ -5,7 +5,7 @@ This package provides the TDCOSMO likelihood as an external package for [Cobaya]
 ⚠️ The velocity dispersions of the SLACS lenses measured by SDSS using single-aperture spectroscopy have recently been shown to exhibit bias compared to IFU spectra obtained from Keck ([Knabel et al. 2024](https://arxiv.org/abs/2409.10631)). This bias will propagate to cosmological inference if these data are included in the analysis (`tdcosmo/data/slacs_sdss_likelihood_processed.pkl` in this repository). For this reason, I recommend **avoiding the use of this likelihood**. The likelihoods derived from the time delay data and from IFU-measured kinematics for nine of the SLACS lenses are safe to use (`tdcosmo/data/tdcosmo7_likelihood_processed.pkl` and `tdcosmo/data/slacs_ifu_likelihood_processed.pkl` respectively). This repository will be updated with any future likelihood for IFU-measured kinematics when so provided by the TDCOSMO collaboration.
 
 ## Requirements
- * hierArc: clone from [repo](https://github.com/sibirrer/hierArc)
+ * hierArc = 1.1.2: install with `pip` or clone from [repo](https://github.com/sibirrer/hierArc)
  * lenstronomy >= 1.1.3: install with `pip` or clone from [repo](https://github.com/lenstronomy/lenstronomy/tree/main)
 
 ## References
